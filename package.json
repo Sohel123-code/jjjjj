@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1 --port 5173",
-    "start": "vite --host 127.0.0.1 --port 5173",
+    "dev": "vite --port 5173",
+    "start": "vite --port 5173",
     "build": "node scripts/build.mjs",
-    "preview": "vite preview --host 127.0.0.1 --port 5173",
+    "preview": "vite preview --port 5173",
     "check": "node --check src/lib/campus.js && node --test tests/*.test.js"
   },
   "dependencies": {

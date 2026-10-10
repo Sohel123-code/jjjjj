@@ -28,11 +28,16 @@ export function AuthProvider({ children }) {
         setLoading(false);
       }, failure => {
         if (cancelled) return;
+        console.error('Firebase Auth state error:', failure);
         setError(authErrorMessage(failure));
         setLoading(false);
       });
     }).catch(failure => {
-      if (!cancelled) { setError(authErrorMessage(failure)); setLoading(false); }
+      if (!cancelled) {
+        console.error('Firebase Auth init error:', failure);
+        setError(authErrorMessage(failure));
+        setLoading(false);
+      }
     });
     return () => { cancelled = true; unsubscribe?.(); };
   }, [attempt]);
@@ -41,7 +46,11 @@ export function AuthProvider({ children }) {
     setPending(true);
     setError('');
     try { await action(); return true; }
-    catch (failure) { if (mounted.current) setError(authErrorMessage(failure)); return false; }
+    catch (failure) {
+      console.error('Firebase Auth action error:', failure);
+      if (mounted.current) setError(authErrorMessage(failure));
+      return false;
+    }
     finally { if (mounted.current) setPending(false); }
   }
   const value = {

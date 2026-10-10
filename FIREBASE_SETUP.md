@@ -4,14 +4,43 @@ Firebase project **polygon-6628c** is now connected in the React source for Goog
 
 **Confirmed membership policy:** students use personal Google accounts. Every new campus membership must be approved by college management; a Google account or shared invite code alone never grants access.
 
-College registration, invite redemption, approval queues, Firestore/Storage data operations, geofencing, moderation and retention jobs below are the next implementation phase. They are not deployed. The homepage forms still identify these actions as previews.
+College registration, invite redemption, approval queues, Firestore/Storage data operations, server-enforced zone access, moderation and retention jobs below are the next implementation phase. They are not deployed. The homepage forms still identify these actions as previews.
+
+**Live-location frontend is implemented:** college setup captures the campus centre from the device instead of asking management to type latitude/longitude. Students can start a foreground location watch and receive inside/outside/uncertain results against a fixed circle or polygon. Until the registration backend exists, this uses an explicitly applied, in-memory local campus preview. It does not grant campus access or upload student coordinates.
 
 ## Firebase Console steps now
 
 1. Open Authentication > Sign-in method and enable **Google**, selecting a support email.
-2. Open Authentication > Settings > Authorised domains. Add `polygon-campus-community.boljagan52.chatgpt.site` for the private preview. For development, add `localhost` and `127.0.0.1` if you use both. Enter hostnames, not paths or ports.
-3. Test **Continue with Google**, choose a personal Google account, and confirm the user appears in Authentication > Users. The UI should say signed in while still explaining that membership requests are not available.
-4. Test sign-out, popup cancellation, blocked popup, refresh and reopening the browser tab. No Firestore/Storage records or administrator roles should be created merely by signing in.
+2. Open Authentication > Settings > Authorised domains. Add `localhost` (required for local development).
+3. Open **Firestore Database** > Create database. Choose a region close to your users. Start in **test mode** or apply the development rules below.
+4. **Firestore Rules** — In Firestore > Rules, paste the following development rules:
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow authenticated users to read/write during development
+    match /colleges/{collegeId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && resource.data.adminUid == request.auth.uid;
+    }
+    match /joinRequests/{requestId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null;
+    }
+    match /posts/{postId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null && resource.data.authorUid == request.auth.uid;
+    }
+  }
+}
+```
+
+5. Test **Continue with Google**, choose a personal Google account, and confirm the user appears in Authentication > Users.
+6. Test the full flow: register a college → get unique ID → student signs in → submits join request → college dashboard accepts → student sees live feed.
 
 The web config alone does not give this coding session permission to change your Firebase Console settings. No billing or provider settings have been changed by this integration.
 
@@ -30,10 +59,10 @@ const firebaseConfig = {
 };
 ```
 
-Still needed for the membership backend:
+Still needed for the membership backend
 
 1. The initial college name, institutional email domain(s), and the email of the initial management account. A platform owner will verify that account before assigning college admin permissions.
-2. Campus latitude/longitude and either radius in metres or a closed boundary array in `[longitude, latitude]` order. These are the institution's published boundary coordinates, not an individual student's location.
+2. The intended campus radius or polygon. Management captures latitude/longitude directly using **Use my current location** while standing at the campus centre. One location fix cannot determine the campus perimeter. The approved institutional boundary will eventually be stored separately from transient student readings.
 3. Confirmed: students use personal Google accounts and require management approval. No student institutional-domain requirement will be applied.
 4. Your chosen Firestore/Storage/Functions regions, or leave the choice for setup. Decide before provisioning to avoid unnecessary migration and cross-region traffic.
 5. Confirmation of whether Blaze billing is available for Cloud Functions, scheduled cleanup and Cloud Storage. The static homepage needs none of these services.
@@ -60,7 +89,7 @@ App Check supplements Authentication and authorisation; it does not replace memb
 
 ## 3. College registration
 
-1. Management signs in with Google and submits college name, institutional domain, campus centre, boundary, and moderator contacts.
+1. Management signs in with Google, captures the campus centre from live device location, and submits college name, institutional domain, radius/polygon boundary, and moderator contacts. Management reviews the captured centre before submission; the centre remains fixed after capture.
 2. The server creates a **pending** application. A user cannot grant themselves an admin role by sending `role: admin` from the browser.
 3. A trusted platform owner verifies institutional control and approves the application. For the hackathon, this can be a manual, logged step with a verified test institution.
 4. The backend validates the zone: coordinate ranges, closed polygon, distinct vertices, nonzero area, no intersecting edges, reasonable extent; also verify that the nominated centre belongs to the zone. Version the boundary when management edits it.
@@ -92,17 +121,29 @@ Google sign-in
 
 ## 5. Zone model and explicit location flow
 
-Support a circle (`centre`, `radiusM`) or polygon (`vertices`). The site illustrates a polygon but does not request location.
+Support a circle (`centre`, `radiusM`) or polygon (`vertices`). The decorative Three.js campus remains illustrative; real location is requested only by explicit location buttons in the college/student dialogs.
+
+Current frontend behaviour:
+
+- College setup uses high-accuracy `watchPosition` with no cached fix requested. A fresh reading within 100 m reported accuracy automatically fills read-only coordinates and stops capture. This threshold is a prototype default; production should consider campus size and require management review.
+- **Apply local zone preview** retains the fixed centre and radius/polygon only in React memory. It never treats the student's subsequent live position as the campus centre. Clear/reset or refresh removes this draft.
+- **Start live location** asks permission and watches changes while the dialog is open and visible. Circle checks use haversine distance. Polygon checks use a campus-scale tangent plane with a conservative edge margin, a 10 km extent limit and no polar support. Production should use a validated server geospatial library.
+- An uncertainty radius overlapping the boundary yields uncertain. Accuracy worse than 100 m also yields uncertain. A fix older than 30 seconds or from the future never yields inside. Fresh fixes can update the result again.
+- Stop/leave, dialog close, student sign-out, tab hide, page exit and permission revocation clear the watcher and student reading. Returning to the tab does not restart tracking automatically. No tracking in the background, public user pins or movement history.
+- No raw location logs, browser-storage persistence, database writes or analytics events are added. A college boundary intentionally captured for setup remains in this page's draft until cleared or reloaded.
+- Missing boundary, HTTPS/permission limitations, denied permission, timeout, unavailable location and low accuracy are explicit states. The live controls can be tested without inventing coordinates through the college's local preview.
+
+Browsers require permission and a secure context for live location. The operating system/browser location provider supplies the estimate. [Geolocation watchPosition](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition), [Reported accuracy](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationCoordinates/accuracy)
 
 Proposed real-app sequence:
 
 1. Explain why location is requested and what happens if the user declines.
-2. Only after clicking **Check my zone**, call browser geolocation with a bounded timeout. No background tracking.
+2. Only after clicking **Start live location**, call `watchPosition` with a bounded timeout. Keep checking in the foreground until stopped. No background tracking.
 3. Send a fresh coordinate and accuracy estimate over TLS to a protected callable. Do not log request bodies containing coordinates.
 4. Evaluate the location and uncertainty against the registered, versioned boundary. A point near an edge or with poor accuracy is **uncertain**, not automatically inside. Use a suitable geospatial library and test circle distance, boundary edges and GPS uncertainty.
-5. Persist only `collegeId`, zone version, status, server check time and short expiry; discard raw coordinates after evaluation. A proposed session lifetime is 10 minutes. Do not store a path or exact location in analytics, posts or user profiles.
+5. Persist only `collegeId`, zone version, status, server check time and short expiry; discard raw coordinates after evaluation. Use short-lived server grants aligned with the 30-second freshness window, renewed from fresh foreground readings at a bounded rate. Do not store a path or exact location in analytics, posts or user profiles.
 6. Every protected feed/post request checks active membership and a current server-issued zone session. An old `inside` value in local storage must not unlock access.
-7. A foreground renewal is explicit or clearly consented. On a new outside estimate, expiry, permission revocation or **Leave zone**, immediately revoke/expire access and clear the visible zone feed. Never claim instant exit detection while no fresh reading exists.
+7. Foreground renewal occurs only during the explicitly started live watch. On a new outside estimate, expiry, permission revocation, stop or **Leave zone**, immediately revoke/expire access and clear the visible zone feed. On tab hide, stop tracking and revoke the current grant where possible; short server expiry handles disconnected clients. Never claim instant exit detection without a fresh reading.
 
 | State | Behaviour |
 | --- | --- |
@@ -179,7 +220,7 @@ Proposed defaults: 72-hour feed lifetime; restricted moderation evidence retaine
 1. Completed in frontend: Firebase Web SDK and Google auth with session loading/error/logout states. Still verify provider/domain configuration and a real login in a browser.
 2. Build management approval, college setup and server-generated invite rotation.
 3. Implement code redemption and institutional membership checks.
-4. Implement opt-in zone checks, denied/uncertain/outside states and session expiry.
+4. Completed locally: opt-in live zone checks, automatic campus-centre capture, denied/uncertain/outside/stale states and cleanup. Pending: approved server-owned boundary loading, server evaluation, short-lived grants and protected-feed access enforcement.
 5. Add validated photos, posts, scoped feed and private claims.
 6. Add reports, server-enforced blocks, atomic throttles and moderator review.
 7. Implement expiry gates, media cleanup, account deletion and accurate retention notices.

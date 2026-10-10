@@ -9,3 +9,178 @@
 
 /* Firebase identity and pending membership states. */
 button:disabled{opacity:.6;transform:none!important}.auth-loading{display:flex;align-items:center;gap:10px;padding:24px 0;font-size:12px;color:#748667}.auth-spinner{width:16px;height:16px;border:2px solid #d7e3c7;border-top-color:#365d43;border-radius:50%;animation:slow-spin 1s linear infinite}.account-notice{font-size:11px;line-height:1.85;color:#75866a;margin:20px 0 10px}.account-identity{display:flex;gap:11px;align-items:center;padding:17px 0 4px}.account-avatar{width:38px;height:38px;flex-shrink:0;border-radius:50%;display:grid;place-items:center;background:#e1edca;font-size:16px;color:#547343}.account-identity>div{min-width:0;flex:1}.account-identity strong{display:block;font-size:12px;overflow-wrap:anywhere}.account-identity>div>span{display:block;font-size:10px;color:#849376;margin-top:4px;overflow-wrap:anywhere}.account-badge{font-size:8px;padding:5px 7px;background:#e5eed8;color:#607c4a;white-space:nowrap;border-radius:4px}.sign-out-button{font-size:11px;margin-top:19px;text-decoration:underline;text-underline-offset:3px}.auth-error{padding:12px;margin-top:15px;border:1px solid #ead9c9;background:#faf0e5;border-radius:6px;color:#925b37;font-size:11px;line-height:1.8}.auth-error .text-button{font-size:10px;margin-top:8px;text-decoration:underline}
+/* Opt-in live location and campus-boundary setup. */
+.location-panel{margin:23px 0 4px;padding:17px;background:#edf2e5;border:1px solid #dce6ce;border-radius:9px}.location-heading{display:flex;align-items:center;gap:8px}.location-heading>span:first-child{font-size:20px;color:#6b8b58}.location-heading h3{font-size:13px;letter-spacing:-.3px}.location-chip{margin-left:auto;font-size:8px;letter-spacing:1px;background:#dce8ca;border-radius:4px;padding:4px 6px}.location-consent{font-size:11px;line-height:1.8;color:#6d8060;margin-top:12px}.location-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.location-actions .button{font-size:10px;padding:11px 14px;flex:1 1 130px;white-space:normal}.location-feedback{font-size:10px;line-height:1.8;color:#647956;margin-top:12px}.zone-result{margin-top:16px;padding:12px;border-radius:6px;background:#f8faf3;border:1px solid #dde6d2}.zone-result strong{font-size:12px}.zone-result p{font-size:10px;line-height:1.8;color:#6c7e5f;margin-top:6px}.zone-inside{background:#e0efcd;border-color:#bed39f}.zone-outside{background:#f4e9da;border-color:#e6d1b9}.zone-uncertain{background:#f4f0dc;border-color:#e2dbb5}.field input[readonly]{background:#eef1e8;color:#60754f;cursor:default}.clear-zone-button{margin:18px 0 5px;font-size:10px;text-decoration:underline;text-underline-offset:3px}
+
+/* ── Active nav indicator ── */
+.nav-active{color:#168c64!important;font-weight:700}
+
+/* ── College ID display ── */
+.college-id-display{display:flex;align-items:center;gap:10px;padding:14px 18px;background:#edf2e5;border:1px solid #d5e0c9;border-radius:9px;margin-top:14px}.college-id-display.large{padding:20px 24px;background:linear-gradient(135deg,#e8f0da,#f0f4e8);border:2px solid #c5d8ac}.college-id-label{font-size:8px;letter-spacing:1.6px;color:#7a8d6a;font-weight:650}.college-id-value{font-family:'Manrope',monospace;font-size:22px;font-weight:800;letter-spacing:1px;color:#244a3b;background:#fffef9;padding:6px 14px;border-radius:6px;border:1px solid #d9e3cb}
+
+/* ── College registered card ── */
+.college-registered{margin-top:20px}.college-registered-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}.college-registered-icon{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#4a8c5e,#2d6b42);color:#fff;font-size:20px;display:grid;place-items:center;flex-shrink:0}.college-registered-header h3{font-size:16px;letter-spacing:-.5px;margin-bottom:2px}.college-registered-header p{font-size:11px;color:#7a8d6a}
+
+/* ── College dashboard ── */
+.dashboard-panel{min-height:60vh}.dashboard-header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-bottom:10px}.dashboard-title{font-size:32px;letter-spacing:-1.5px;font-weight:700;margin-top:10px}.dashboard-instruction{font-size:12px;color:#6d8060;line-height:1.8;margin-bottom:24px;background:#eef2e6;padding:14px 18px;border-radius:8px;border-left:4px solid #7aab5e}.dashboard-instruction strong{color:#244a3b;font-weight:700}
+
+.dashboard-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:30px}.stat-card{background:#fafbf6;border:1px solid #dfe5d7;border-radius:10px;padding:20px 22px;text-align:center;transition:transform .2s,box-shadow .2s}.stat-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px #33442910}.stat-number{display:block;font-family:'Manrope',sans-serif;font-size:34px;font-weight:800;color:#244a3b;letter-spacing:-1px}.stat-label{font-size:10px;letter-spacing:1.2px;color:#8a957f;margin-top:4px;text-transform:uppercase}.stat-accepted .stat-number{color:#4a8c5e}.stat-rejected .stat-number{color:#b5734a}
+
+.dashboard-empty{text-align:center;padding:50px 20px;background:#fafbf6;border:1px dashed #d5ddce;border-radius:12px;margin-top:10px}.dashboard-empty-icon{font-size:42px;display:block;margin-bottom:14px}.dashboard-empty p{font-size:12px;color:#8a957f;line-height:1.8}
+
+.requests-heading{font-size:14px;letter-spacing:-.3px;margin-bottom:14px;color:#244a3b}
+.requests-table{border:1px solid #dfe5d7;border-radius:10px;overflow:hidden}.request-row{display:grid;grid-template-columns:1.8fr 1fr .9fr .8fr 1fr 1.3fr;align-items:center;gap:10px;padding:14px 18px;font-size:11px;border-bottom:1px solid #edf0e7;transition:background .15s}.request-row:last-child{border-bottom:0}.request-row:hover:not(.request-header){background:#f5f7f0}.request-header{background:#edf1e7;font-weight:650;font-size:10px;letter-spacing:.5px;color:#6d7d5f;text-transform:uppercase}
+.request-student{display:flex;align-items:center;gap:8px}.request-student div{min-width:0}.request-student strong{display:block;font-size:11px;font-weight:600;overflow-wrap:anywhere}.request-student span{display:block;font-size:9px;color:#8a957f;overflow-wrap:anywhere}
+.request-field{font-weight:500;color:#4a5d3e}
+.request-status-badge{font-size:9px;font-weight:650;padding:5px 9px;border-radius:5px;white-space:nowrap}.status-pending{background:#fff6e7;color:#a57849}.status-accepted{background:#e2ecd2;color:#4a7a3b}.status-rejected{background:#fae5e5;color:#8b4040}
+.request-actions{display:flex;gap:6px;flex-wrap:wrap}.request-actions .button{font-size:9px;padding:8px 12px;gap:6px}
+.request-row.accepted{background:#f8fbf3}.request-row.rejected{opacity:.7}
+
+/* ── Student join form ── */
+.student-join-form{margin-top:18px}.join-form-header{display:flex;align-items:center;gap:12px;margin-bottom:6px}.join-form-icon{font-size:28px}.join-form-header h3{font-size:15px;letter-spacing:-.4px;font-weight:650}.join-form-header p{font-size:10px;color:#8a957f;margin-top:2px}
+
+.join-status-card{margin-top:18px;padding:18px;background:#fafbf6;border:1px solid #dfe5d7;border-radius:10px}.join-status-badge{display:inline-block;font-size:11px;font-weight:650;padding:7px 14px;border-radius:6px;margin-bottom:12px}.join-status-details{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;margin-bottom:10px}.join-status-details p{padding:6px 10px;background:#eef2e6;border-radius:5px}.join-status-details strong{color:#3a5a2e;font-weight:600}.join-status-message{font-size:11px;color:#6d8060;line-height:1.8;padding:10px;border-radius:6px;background:#eef2e6;margin-top:8px}.join-status-success{background:#e0efcd;color:#3a6b28}.join-status-error{background:#fae5e5;color:#8b4040}
+
+.join-submitted{text-align:center;padding:28px 16px;margin-top:18px}.join-submitted-icon{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#4a8c5e,#2d6b42);color:#fff;font-size:24px;display:inline-grid;place-items:center;margin-bottom:14px}.join-submitted h3{font-size:18px;letter-spacing:-.5px;margin-bottom:8px}.join-submitted p{font-size:11px;color:#6d8060;line-height:1.8}.join-submitted-summary{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}.join-submitted-summary span{font-size:10px;padding:6px 12px;background:#eef2e6;border-radius:5px;color:#4a5d3e;font-weight:500}
+
+/* ── Instagram-style Campus Feed ── */
+.insta-feed{min-height:80vh;padding-bottom:40px}
+
+/* Feed hero header */
+.insta-feed-header{margin-bottom:28px}
+.insta-feed-hero{position:relative;padding:36px 32px 28px;background:linear-gradient(135deg,#1a3a2b 0%,#2d5f44 40%,#3a7556 100%);border-radius:16px;overflow:hidden;color:#fff;display:flex;justify-content:space-between;align-items:flex-end;gap:28px;flex-wrap:wrap}
+.insta-feed-hero-glow{position:absolute;width:300px;height:300px;background:radial-gradient(circle,#8fce5a33,transparent 70%);top:-80px;right:-40px;pointer-events:none}
+.insta-feed-hero-text{position:relative;z-index:1}
+.insta-feed-hero-text .eyebrow{color:#b8e89d;margin-bottom:10px}
+.insta-feed-hero-text .status-dot{background:#8fce5a;box-shadow:0 0 0 4px #8fce5a22}
+.insta-feed-hero-text h2{font-size:34px;letter-spacing:-1.8px;font-weight:800;margin-bottom:6px}
+.insta-feed-hero-text p{font-size:12px;color:#a8d4b8;line-height:1.7;max-width:340px}
+.insta-feed-hero-stats{display:flex;gap:22px;position:relative;z-index:1}
+.insta-stat{text-align:center;padding:12px 18px;background:#ffffff12;backdrop-filter:blur(12px);border:1px solid #ffffff18;border-radius:12px;min-width:72px}
+.insta-stat-num{display:block;font-family:'Manrope',sans-serif;font-size:26px;font-weight:800;letter-spacing:-1px}
+.insta-stat-label{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#b8d9a8;margin-top:2px}
+
+/* Toolbar with filters */
+.insta-toolbar{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:20px;flex-wrap:wrap}
+.insta-filters{display:flex;gap:7px;flex-wrap:wrap}
+.insta-filter-chip{font-size:11px;padding:9px 16px;border-radius:20px;background:#f0f3ea;border:1px solid #dde3d3;color:#5c6b51;font-weight:500;display:flex;align-items:center;gap:7px;transition:all .25s}
+.insta-filter-chip:hover{background:#e4ebd9;transform:translateY(-1px)}
+.insta-filter-chip.active{background:#244a3b;color:#fff;border-color:#244a3b;box-shadow:0 4px 14px #244a3b30}
+.insta-chip-count{font-size:9px;padding:2px 7px;border-radius:10px;background:#00000010;font-weight:700}
+.insta-filter-chip.active .insta-chip-count{background:#ffffff20}
+.insta-toolbar-actions{display:flex;gap:10px;align-items:center}
+.insta-compose-btn{border-radius:10px;gap:10px}
+.insta-refresh-btn{width:38px;height:38px;border-radius:10px;background:#f0f3ea;border:1px solid #dde3d3;font-size:18px;color:#5c6b51;display:grid;place-items:center;transition:all .2s}
+.insta-refresh-btn:hover{background:#e4ebd9;transform:rotate(180deg)}
+
+/* ── Compose form ── */
+.insta-compose{background:#fafbf6;border:1px solid #dfe5d7;border-radius:16px;padding:26px;margin-bottom:26px;animation:card-in .35s ease;box-shadow:0 8px 30px #3344290a}
+.insta-compose-header{display:flex;align-items:center;gap:13px;margin-bottom:20px}
+.insta-compose-avatar{width:44px;height:44px;border-radius:50%;overflow:hidden;flex-shrink:0;background:#e1edca;display:grid;place-items:center;font-size:18px;color:#547343}
+.insta-compose-avatar img{width:100%;height:100%;object-fit:cover}
+.insta-compose-header strong{display:block;font-size:13px}
+.insta-compose-header span{font-size:10px;color:#8a957f}
+.insta-compose-type{display:flex;gap:8px;margin-bottom:18px}
+.insta-type-btn{flex:1;padding:12px;border-radius:10px;font-size:12px;font-weight:600;background:#f0f3ea;border:2px solid transparent;color:#5c6b51;transition:all .2s}
+.insta-type-btn:hover{background:#e8edd9}
+.insta-type-btn.active.lost{background:#fff6e7;border-color:#e8c48a;color:#a57849}
+.insta-type-btn.active.found{background:#e2ecd2;border-color:#a8cc8a;color:#4a7a3b}
+.insta-compose-fields{display:grid;gap:12px;margin-bottom:16px}
+.insta-input,.insta-textarea{width:100%;border:1px solid #d9e1ce;padding:13px 15px;background:#fffef9;border-radius:10px;color:#354d2f;font-size:13px;font-weight:400;transition:border-color .2s,box-shadow .2s}
+.insta-input:focus,.insta-textarea:focus{border-color:#7aab5e;box-shadow:0 0 0 3px #7aab5e18;outline:none}
+.insta-textarea{min-height:90px;resize:vertical;line-height:1.7}
+.insta-compose-row{display:flex;gap:12px}
+.insta-input-wrap{position:relative;flex:1}
+.insta-input-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;color:#8a957f;pointer-events:none}
+.insta-input-icon-pad{padding-left:36px}
+
+/* Image upload area */
+.insta-compose-image-section{margin-bottom:18px}
+.insta-add-image{width:100%;padding:28px 20px;background:#f4f7ef;border:2px dashed #cdd6c0;border-radius:12px;display:flex;flex-direction:column;align-items:center;gap:6px;color:#6d8060;transition:all .2s;cursor:pointer}
+.insta-add-image:hover{background:#edf2e5;border-color:#9cb586;transform:translateY(-1px)}
+.insta-add-image-icon{font-size:28px}
+.insta-add-image span{font-size:12px;font-weight:600}
+.insta-add-image small{font-size:9px;color:#9aa58e}
+.insta-compose-preview{position:relative;border-radius:12px;overflow:hidden;max-height:300px}
+.insta-compose-preview img{width:100%;max-height:300px;object-fit:cover;display:block;border-radius:12px}
+.insta-preview-remove{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:#000000aa;color:#fff;font-size:16px;display:grid;place-items:center;backdrop-filter:blur(4px);border:none;cursor:pointer;transition:transform .2s}
+.insta-preview-remove:hover{transform:scale(1.15)}
+.insta-compose-actions{display:flex;justify-content:flex-end;gap:10px}
+.insta-compose-actions .button{border-radius:10px}
+
+/* ── Post cards (Instagram-like) ── */
+.insta-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:22px}
+.insta-card{background:#fafbf6;border:1px solid #dfe5d7;border-radius:16px;overflow:hidden;animation:card-in .45s ease both;transition:transform .3s,box-shadow .3s}
+.insta-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px #3344290e}
+
+/* Card header */
+.insta-card-top{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;gap:10px}
+.insta-card-author{display:flex;align-items:center;gap:10px;min-width:0}
+.insta-card-avatar{width:36px;height:36px;border-radius:50%;flex-shrink:0;object-fit:cover;border:2px solid #d5e3c8}
+.insta-card-avatar-fallback{background:linear-gradient(135deg,#4a8c5e,#2d6b42);color:#fff;font-size:14px;font-weight:700;display:grid;place-items:center}
+.insta-card-author strong{display:block;font-size:12px;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.insta-card-author span{display:block;font-size:9px;color:#8a957f}
+.insta-card-badge{font-size:9px;font-weight:700;padding:5px 12px;border-radius:8px;letter-spacing:.3px;white-space:nowrap;flex-shrink:0}
+
+/* Card image */
+.insta-card-image{width:100%;max-height:380px;overflow:hidden;background:#eef1e7;position:relative}
+.insta-card-image img{width:100%;height:100%;max-height:380px;object-fit:cover;display:block;transition:transform .5s}
+.insta-card:hover .insta-card-image img{transform:scale(1.03)}
+
+/* Card actions */
+.insta-card-actions{display:flex;align-items:center;gap:4px;padding:10px 18px 4px}
+.insta-action-btn{background:none;font-size:20px;padding:4px 6px;border-radius:6px;transition:transform .2s}
+.insta-action-btn:hover{transform:scale(1.2)}
+.insta-liked{animation:like-pop .35s ease}
+.insta-action-delete{margin-left:auto;font-size:16px;opacity:.5;transition:opacity .2s,transform .2s}
+.insta-action-delete:hover{opacity:1}
+.insta-card-time{margin-left:auto;font-size:9px;color:#a5b098;letter-spacing:.2px}
+
+/* Card body */
+.insta-card-body{padding:4px 18px 16px}
+.insta-card-body h3{font-size:14px;letter-spacing:-.3px;font-weight:700;margin-bottom:4px}
+.insta-card-body p{font-size:11px;color:#6d8060;line-height:1.75}
+.insta-truncated{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.insta-read-more{background:none;font-size:11px;color:#4a7a3b;font-weight:600;padding:2px 0;margin-top:2px}
+.insta-read-more:hover{text-decoration:underline}
+
+/* Empty state */
+.insta-empty{text-align:center;padding:70px 28px;background:#fafbf6;border:1px dashed #d5ddce;border-radius:16px;margin-top:10px}
+.insta-empty-icon{font-size:52px;display:block;margin-bottom:16px;animation:float-note 4s ease-in-out infinite}
+.insta-empty h3{font-size:18px;font-weight:700;letter-spacing:-.5px;margin-bottom:8px}
+.insta-empty p{font-size:12px;color:#8a957f;line-height:1.8;margin-bottom:20px;max-width:320px;margin-inline:auto}
+
+/* Skeleton loader */
+.insta-skeleton{background:#fafbf6;border:1px solid #edf0e7;border-radius:16px;overflow:hidden;animation:skeleton-pulse 1.5s ease-in-out infinite}
+.insta-skel-header{display:flex;align-items:center;gap:10px;padding:14px 18px}
+.insta-skel-circle{width:36px;height:36px;border-radius:50%;background:#e8ecdf}
+.insta-skel-lines{flex:1;display:grid;gap:6px}.insta-skel-lines div{height:10px;background:#e8ecdf;border-radius:4px}.insta-skel-lines div:last-child{width:60%}
+.insta-skel-image{height:240px;background:#e8ecdf}
+.insta-skel-body{padding:16px 18px;display:grid;gap:8px}.insta-skel-body div{height:10px;background:#e8ecdf;border-radius:4px}.insta-skel-body div:first-child{width:70%}.insta-skel-body div:last-child{width:45%}
+
+@keyframes skeleton-pulse{0%,100%{opacity:1}50%{opacity:.45}}
+@keyframes like-pop{0%{transform:scale(1)}25%{transform:scale(1.35)}50%{transform:scale(.9)}100%{transform:scale(1)}}
+
+/* Feed responsive */
+@media(max-width:850px){
+  .insta-feed-hero{padding:28px 22px 22px;flex-direction:column;align-items:stretch}
+  .insta-feed-hero-stats{justify-content:center}
+  .insta-stat{min-width:60px;padding:10px 14px}.insta-stat-num{font-size:22px}
+  .insta-toolbar{flex-direction:column;align-items:stretch}
+  .insta-filters{justify-content:center}
+  .insta-toolbar-actions{justify-content:center}
+  .insta-grid{grid-template-columns:1fr}
+  .insta-card-image{max-height:320px}.insta-card-image img{max-height:320px}
+}
+@media(max-width:620px){
+  .insta-feed-hero-text h2{font-size:26px}
+  .insta-feed-hero-text p{font-size:11px}
+  .insta-filter-chip{font-size:10px;padding:7px 12px}
+  .insta-compose{padding:20px 16px}
+  .insta-grid{grid-template-columns:1fr;gap:16px}
+}
+
+/* ── Dashboard & feed responsive ── */
+@media(max-width:850px){.dashboard-stats{grid-template-columns:repeat(3,1fr);gap:10px}.stat-number{font-size:26px}.request-row{grid-template-columns:1fr;gap:6px;padding:14px}.request-header{display:none}.request-student{margin-bottom:4px}.request-field{font-size:10px}.request-field::before{content:attr(data-label);font-weight:600;margin-right:4px;color:#6d7d5f}.request-actions{margin-top:6px}.live-feed-grid{grid-template-columns:1fr}}
+@media(max-width:620px){.dashboard-stats{grid-template-columns:1fr}.college-id-value{font-size:18px}.dashboard-title{font-size:26px}.live-feed-title{font-size:26px}}
+

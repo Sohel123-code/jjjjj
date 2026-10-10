@@ -28,12 +28,16 @@ Node 22.12+ or a supported newer version is required by Vite. This project was b
 - Scroll-driven camera movement, section reveals, and progress indicator.
 - Reduced-motion support, offscreen/background animation pausing, WebGL fallback, and React lifecycle disposal of GPU resources.
 - Sample lost/found/reunited feed with working filters and post dialogs.
-- Separate student join/login previews; college setup preview with circle/polygon validation.
+- Real Firebase Google sign-in/sign-out, tab-scoped session persistence, account state and setup/popup/network error handling.
+- Students use personal Google accounts; campus access requires management approval in the upcoming membership backend.
+- College setup preview with circle/polygon validation; invite checks validate format only.
 - Claim-flow explanation, report/block previews, privacy notice and expandable FAQs.
 
 ## Deliberately pending
 
-Google sign-in, real accounts, college verification, invites, actual geofencing, posts, uploads, private claims, reports, blocks, moderator tools, expiry enforcement and rate limits require the Firebase backend. All corresponding homepage interactions are labelled previews. They do not send or persist submitted data, and the homepage never requests location.
+Firebase project `polygon-6628c` is configured for Google Authentication. Google sign-in shares identity with Firebase and creates an Authentication user on first successful login. Enable the Google provider and authorise the frontend domain in Firebase Console before testing. Analytics is not initialised.
+
+College verification, invite redemption, management approval, actual geofencing, posts, uploads, private claims, reports, blocks, moderator tools, expiry enforcement and rate limits remain pending. These forms are labelled previews and do not save/send their entries. Signing in never grants campus access or an admin role. The homepage never requests location or reads/writes Firestore/Storage.
 
 The feed is illustrative. The campus model does not represent a verified real college. The 72-hour post lifetime and 30-day safety-evidence retention are proposed defaults, not an operational policy.
 
@@ -48,6 +52,11 @@ src/lib/campus.js              Procedural 3D model and camera animation
 src/components/Feed.jsx        Sample feed and filters
 src/components/ItemArtwork.jsx Original vector sample-item illustrations
 src/components/Modal.jsx       Accessible onboarding and information dialogs
+src/components/AccountPanel.jsx Google sign-in and pending membership UI
+src/context/AuthContext.jsx    Session observer and shared identity state
+src/lib/firebaseConfig.js      Supplied public Firebase web configuration
+src/lib/firebase.js            Firebase app and Google Authentication adapter
+src/lib/authService.js         Session readiness, concurrency and error handling
 src/lib/validation.js          Campus boundary and invite-format validation
 src/lib/useScrollReveal.js     Scroll reveals and progress
 src/styles.css                Responsive design and reduced-motion styles
@@ -60,4 +69,4 @@ scripts/build.mjs             Vite production build entry
 
 ## Verification
 
-Production build, four validation tests, and a successful local HTTP response were checked. Browser automation was unavailable in the authoring environment; desktop/mobile visual inspection and end-to-end interaction testing remain to be performed in a browser.
+Production build and ten tests covering auth readiness, popup concurrency, retries, safe errors, boundary validation and invite format pass. An earlier homepage iteration also passed a local HTTP check. Browser automation was unavailable in the authoring environment; desktop/mobile visual inspection and a real Google login/logout remain to be tested. Unit tests do not establish that Firebase Console settings are enabled.

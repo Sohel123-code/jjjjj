@@ -1,0 +1,61 @@
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { authService } from '../lib/firebase.js';
+import { authErrorMessage } from '../lib/authService.js';
+
+const AuthContext = createContext(null);
+
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState('');
+  const [attempt, setAttempt] = useState(0);
+  const mounted = useRef(false);
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; };
+  }, []);
+  useEffect(() => {
+    let cancelled = false;
+    let unsubscribe;
+    setLoading(true);
+    setError('');
+    authService.initialize().then(() => {
+      if (cancelled) return;
+      unsubscribe = authService.subscribe(currentUser => {
+        if (cancelled) return;
+        setUser(currentUser);
+        setLoading(false);
+      }, failure => {
+        if (cancelled) return;
+        setError(authErrorMessage(failure));
+        setLoading(false);
+      });
+    }).catch(failure => {
+      if (!cancelled) { setError(authErrorMessage(failure)); setLoading(false); }
+    });
+    return () => { cancelled = true; unsubscribe?.(); };
+  }, [attempt]);
+
+  async function perform(action) {
+    setPending(true);
+    setError('');
+    try { await action(); return true; }
+    catch (failure) { if (mounted.current) setError(authErrorMessage(failure)); return false; }
+    finally { if (mounted.current) setPending(false); }
+  }
+  const value = {
+    user, loading, pending, error,
+    signIn: () => perform(() => authService.signIn()),
+    signOut: () => perform(() => authService.signOut()),
+    retry: () => setAttempt(value => value + 1),
+    clearError: () => setError(''),
+  };
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error('useAuth must be used within AuthProvider');
+  return context;
+}

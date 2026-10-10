@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { validateCollege, validateInvite } from '../lib/validation.js';
+import { validateCollege } from '../lib/validation.js';
 import ItemArtwork from './ItemArtwork.jsx';
+import AccountPanel from './AccountPanel.jsx';
 
 export default function Modal({ dialog, onClose }) {
   const ref = useRef(null);
@@ -28,27 +29,17 @@ export default function Modal({ dialog, onClose }) {
 function Intro({ eyebrow, title, children }) {
   return <><div className="dialog-eyebrow">{eyebrow}</div><h2 className="dialog-title" id="dialog-title">{title}</h2>{children && <p className="dialog-description">{children}</p>}</>;
 }
-const PreviewNotice = () => <p className="preview-notice">Homepage preview · Firebase isn’t connected yet. No account is created, no location is requested, and form entries aren’t saved or sent.</p>;
+const PreviewNotice = () => <p className="preview-notice">Feature preview · This form does not save or send entries. Google sign-in is connected separately; college registration, membership approval and moderation are not active yet.</p>;
 
 function DialogContent({ dialog }) {
   const [status, setStatus] = useState('');
   const [zoneType, setZoneType] = useState('radius');
-  const [mode, setMode] = useState('join');
   if (dialog.type === 'student') return <>
-    <Intro eyebrow="YOUR PEOPLE ARE RIGHT HERE" title={mode === 'join' ? 'Find your Polygon.' : 'Welcome back.'}>Your college invite connects you to your campus. Google sign-in keeps your account yours.</Intro>
-    <div className="auth-tabs"><button className={mode === 'join' ? 'active' : ''} onClick={() => {setMode('join');setStatus('');}} aria-pressed={mode === 'join'}>Join your campus</button><button className={mode === 'login' ? 'active' : ''} onClick={() => {setMode('login');setStatus('');}} aria-pressed={mode === 'login'}>Log in</button></div>
-    <PreviewNotice/>
-    <form className="dialog-form" onSubmit={event => {
-      event.preventDefault();
-      if (mode === 'join') { const error = validateInvite(new FormData(event.currentTarget).get('code')); if (error) {setStatus(error);return;} }
-      setStatus(mode === 'join' ? 'Code format looks good. When Firebase is connected, Google sign-in will run first, then the server will validate the code and your college membership. This code has not been verified.' : 'Google login will be available after Firebase is connected. Returning students will use their existing approved campus membership.');
-    }}>
-      {mode === 'join' && <label className="field">College invite code<input name="code" placeholder="Enter your college’s code" autoComplete="off" minLength={6} maxLength={40} required spellCheck="false"/></label>}
-      <button className="button google-button" type="submit"><span className="google-g" aria-hidden="true">G</span> Preview Google {mode === 'join' ? 'sign-up' : 'login'} <span>↗</span></button>
-    </form><p className="dialog-help">{mode === 'join' ? 'No code? Ask your college’s Polygon administrator.' : 'Location access and membership verification are separate from sign-in.'}</p>{status && <p className="form-status" role="status">{status}</p>}
+    <Intro eyebrow="YOUR PEOPLE ARE RIGHT HERE" title="Find your Polygon.">Your Google account is your identity. Your college’s approval is your way into the community.</Intro>
+    <AccountPanel/>
   </>;
   if (dialog.type === 'college') return <>
-    <Intro eyebrow="BUILT AROUND YOUR CAMPUS" title="Give your campus a Polygon.">Start with your institution and its boundary. Verified management will control invitations and moderation.</Intro><PreviewNotice/>
+    <Intro eyebrow="BUILT AROUND YOUR CAMPUS" title="Give your campus a Polygon.">Start with your institution and its boundary. Verified management will control invitations and moderation.</Intro><AccountPanel college/><PreviewNotice/>
     <form className="dialog-form" onSubmit={event => {
       event.preventDefault(); const values = Object.fromEntries(new FormData(event.currentTarget)); const error=validateCollege(values);
       setStatus(error || `Setup preview ready for ${values.name.trim()}: ${values.zoneType === 'radius' ? `a ${Number(values.radius).toLocaleString()} m radius` : 'a polygon boundary'}, centred at ${Number(values.latitude)}, ${Number(values.longitude)}. Next: Google sign-in → management verification → server-created college ID and private invite code. Nothing has been registered or saved.`);

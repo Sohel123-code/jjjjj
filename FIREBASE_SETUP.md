@@ -1,10 +1,23 @@
 # Polygon: Firebase implementation handoff
 
-This document describes the next implementation phase. The React homepage is a preview; none of the backend protections described here are deployed.
+Firebase project **polygon-6628c** is now connected in the React source for Google Authentication. Sign-in, sign-out, tab-scoped session persistence, account loading and error handling are implemented. Analytics stays disabled. A real browser login has not yet been verified.
+
+**Confirmed membership policy:** students use personal Google accounts. Every new campus membership must be approved by college management; a Google account or shared invite code alone never grants access.
+
+College registration, invite redemption, approval queues, Firestore/Storage data operations, geofencing, moderation and retention jobs below are the next implementation phase. They are not deployed. The homepage forms still identify these actions as previews.
+
+## Firebase Console steps now
+
+1. Open Authentication > Sign-in method and enable **Google**, selecting a support email.
+2. Open Authentication > Settings > Authorised domains. Add `polygon-campus-community.boljagan52.chatgpt.site` for the private preview. For development, add `localhost` and `127.0.0.1` if you use both. Enter hostnames, not paths or ports.
+3. Test **Continue with Google**, choose a personal Google account, and confirm the user appears in Authentication > Users. The UI should say signed in while still explaining that membership requests are not available.
+4. Test sign-out, popup cancellation, blocked popup, refresh and reopening the browser tab. No Firestore/Storage records or administrator roles should be created merely by signing in.
+
+The web config alone does not give this coding session permission to change your Firebase Console settings. No billing or provider settings have been changed by this integration.
 
 ## 1. What to provide next
 
-Create a Firebase project, register a **Web app**, and provide its web `firebaseConfig` object:
+The web config has been received and saved in `src/lib/firebaseConfig.js`. No need to send it again. Its shape is:
 
 ```js
 const firebaseConfig = {
@@ -17,11 +30,11 @@ const firebaseConfig = {
 };
 ```
 
-Also provide:
+Still needed for the membership backend:
 
 1. The initial college name, institutional email domain(s), and the email of the initial management account. A platform owner will verify that account before assigning college admin permissions.
 2. Campus latitude/longitude and either radius in metres or a closed boundary array in `[longitude, latitude]` order. These are the institution's published boundary coordinates, not an individual student's location.
-3. Whether students have institutional Google accounts. If not, use management-approved enrolment after Google sign-in with a personal account.
+3. Confirmed: students use personal Google accounts and require management approval. No student institutional-domain requirement will be applied.
 4. Your chosen Firestore/Storage/Functions regions, or leave the choice for setup. Decide before provisioning to avoid unnecessary migration and cross-region traffic.
 5. Confirmation of whether Blaze billing is available for Cloud Functions, scheduled cleanup and Cloud Storage. The static homepage needs none of these services.
 
@@ -31,7 +44,7 @@ The web configuration is intended to be present in client code; it is not the au
 
 | Service | Setup | Purpose |
 | --- | --- | --- |
-| Authentication | Enable Google; configure support email and authorised domains, including local development hosts as needed | Student and management identity |
+| Authentication | React integration is complete; enable Google, configure support email and authorise frontend domains in Console | Student and management identity |
 | Cloud Firestore | Create the database with restrictive rules; avoid public test-mode access | Colleges, memberships, posts, claims, moderation |
 | Cloud Storage | Create a private bucket with restrictive rules | Item photos and restricted moderation evidence |
 | Cloud Functions | Use callable functions and managed runtime identity | Validate membership, invites, zones, posts, claims and moderation |
@@ -64,14 +77,15 @@ Google sign-in
   -> authenticated UID and verified email
   -> submit college invite to redeemCollegeInvite callable
   -> server checks App Check, rate limit, code status and college status
-  -> check college-approved institutional domain OR management approval
+  -> create a pending membership request for management review
+  -> authorised college management approves the student
   -> active college membership
   -> separate location consent / zone check
   -> zone-scoped feed
 ```
 
-- Validate the verified email claim server-side. Do not trust an editable profile email or a client-supplied domain.
-- If the domain is not approved, create a pending membership for management review. No private campus feed while pending.
+- Validate identity and verified email server-side. Do not trust an editable profile email. Personal Google emails are allowed and do not need to match the institution's domain.
+- Every new membership starts pending, even when the code is valid. Only approved management of that college may activate it. No private campus feed while pending.
 - Subsequent logins reuse active membership; the student does not need to re-enter the joining code each time.
 - Suspensions and membership revocations are checked on every protected request. Refreshing the page or retaining an old token must not restore access.
 - Keep minimal profile data: Firebase UID, display name, optional avatar and approved college memberships. No public student email directory.
@@ -162,7 +176,7 @@ Proposed defaults: 72-hour feed lifetime; restricted moderation evidence retaine
 
 ## 10. Implementation sequence and acceptance checks
 
-1. Connect the Firebase Web SDK and Google auth after receiving config; implement session loading/error/logout states.
+1. Completed in frontend: Firebase Web SDK and Google auth with session loading/error/logout states. Still verify provider/domain configuration and a real login in a browser.
 2. Build management approval, college setup and server-generated invite rotation.
 3. Implement code redemption and institutional membership checks.
 4. Implement opt-in zone checks, denied/uncertain/outside states and session expiry.

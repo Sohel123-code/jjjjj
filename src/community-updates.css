@@ -1,0 +1,55 @@
+/* Single content column, with room for conversations. */
+.workspace-grid{display:grid;grid-template-columns:minmax(0,860px);justify-content:center;max-width:1200px;gap:0;padding:36px 44px;margin:0 auto}
+.admin-workspace .workspace-grid{grid-template-columns:minmax(0,1020px)}
+.main-column{min-width:0;width:100%}
+.post-card,.group-card,.admin-section{box-shadow:0 4px 24px rgb(29 50 35 / 2%)}
+.post-body>p{font-size:14px;line-height:1.75}.post-body h3{font-size:20px}
+.post-author>span,.post-footer .expiry,.comment-actions small{font-size:11px}
+.post-header .post-author b{font-size:13px}.comment p,.comment-form input{font-size:13px}
+.comment>div{min-width:0;flex:1}.location-toggle{font-size:11px}
+.photo-picker{margin:12px 0;text-align:left;min-width:0}
+.photo-attach{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--border);padding:8px 12px;border-radius:10px;color:var(--ink);font-size:12px;cursor:pointer;background:var(--surface)}
+.photo-attach.disabled{opacity:.55;cursor:wait}
+.photo-picker:focus-within .photo-attach{outline:2px solid #728d57;outline-offset:3px}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+.attachment-preview{display:flex;align-items:center;gap:12px;margin:10px 0}
+.attachment-preview img{width:80px;height:80px;object-fit:cover;border-radius:10px}
+.attachment-preview button{font-size:12px;text-decoration:underline}
+.content-photo{overflow:hidden;border-radius:12px;max-width:100%;margin:12px 0}
+.content-photo img{display:block;width:100%;max-height:520px;object-fit:contain;background:var(--soft)}
+.post-card>.content-photo{margin:0 18px}.comment .content-photo{max-width:340px}
+.group-card>.content-photo img{height:160px;object-fit:cover}
+.invite-card{padding:26px;margin-bottom:24px;display:grid;gap:16px}
+.invite-card h2{font-size:23px;margin-top:8px}
+.invite-code{display:flex;gap:12px;align-items:center;justify-content:space-between;background:var(--soft);border:1px solid var(--border);border-radius:12px;padding:16px;min-width:0}
+.invite-code code{overflow-wrap:anywhere;font-size:13px;min-width:0;user-select:all}
+.invite-code button{flex-shrink:0;font-size:12px}.invite-card>.button{justify-self:start}
+.chat-workspace .workspace-grid{display:block;padding:20px 26px;max-width:none}
+.chat-workspace .management-title,.chat-workspace .management-tabs{display:none}
+.chat-shell{display:flex;flex-direction:column;height:calc(100dvh - 128px);min-height:420px;max-height:none;overflow:hidden;border-radius:18px}
+.chat-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:24px 32px}
+.chat-header,.chat-notice,.chat-compose,.chat-footer,.typing{flex-shrink:0}
+.chat-header h2{font-size:18px;overflow-wrap:anywhere}.chat-header>div{min-width:0}
+.chat-header span{font-size:11px}.chat-expand{margin-left:auto;white-space:nowrap;font-size:11px}
+.message-bubble{max-width:min(75%,620px);padding:13px 17px}
+.message-bubble>p{font-size:14px;line-height:1.6;overflow-wrap:anywhere}.message-bubble>b{font-size:11px}
+.message-bubble .content-photo{width:min(420px,100%)}.message-bubble .content-photo img{max-height:330px;object-fit:contain}
+.message-options{z-index:15}.chat-compose{padding:16px 24px 10px}
+.chat-compose textarea{font-size:14px;min-height:46px}
+.chat-compose>.photo-picker{display:block;margin:8px 0 3px}.chat-compose>.photo-picker .attachment-preview{display:flex}
+.chat-compose>.tiny{font-size:10px}
+.chat-fullscreen{position:fixed;inset:0;z-index:80;width:100%;height:100dvh!important;min-height:0;border-radius:0;margin:0}
+.chat-fullscreen .chat-scroll{padding-left:max(24px,calc((100vw - 1000px)/2));padding-right:max(24px,calc((100vw - 1000px)/2))}
+.dialog-backdrop{z-index:110}
+@media(max-width:1050px){.workspace-grid{padding:28px;grid-template-columns:minmax(0,860px)}}
+@media(max-width:620px){
+ .workspace-grid{padding:24px 16px 90px;display:block;max-width:100%}
+ .post-body h3{font-size:17px}.post-body>p{font-size:13px}.location-toggle{font-size:9px}
+ .chat-workspace .workspace-grid{padding:0 0 70px}
+ .chat-shell{height:calc(100dvh - 172px);min-height:360px;border-radius:0;border-left:0;border-right:0}
+ .chat-header h2{font-size:15px}.chat-expand{font-size:10px}.chat-header span{font-size:10px}
+ .chat-scroll{padding:16px 12px}.message-bubble{max-width:86%}.message-bubble>p{font-size:13px}
+ .chat-compose{padding:12px}.chat-compose textarea{font-size:16px}.chat-notice{font-size:9px}
+ .invite-card{padding:20px}.invite-code{align-items:flex-start}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}

@@ -56,7 +56,11 @@ export function createLocationWatcher(environment, notify) {
   const pageHide = () => { if (active) stop('paused'); };
   page?.addEventListener('visibilitychange', visibilityChange);
   page?.defaultView?.addEventListener('pagehide', pageHide);
-  return { start, stop, dispose() {
+  return { start, stop, updatePosition(next) {
+    if (!active || disposed || !validFix(next, now())) return;
+    if (position && next.timestamp < position.timestamp) return;
+    hasFix = true; emit('live', next);
+  }, dispose() {
     disposed = true; clear();
     page?.removeEventListener('visibilitychange', visibilityChange);
     page?.defaultView?.removeEventListener('pagehide', pageHide);

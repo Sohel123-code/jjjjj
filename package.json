@@ -1,6 +1,6 @@
 {
-  "name": "polygon-campus",
-  "version": "0.1.0",
+  "name": "polygon-zones",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,16 +8,39 @@
     "start": "vite --port 5173",
     "build": "node scripts/build.mjs",
     "preview": "vite preview --port 5173",
-    "check": "node --check src/lib/campus.js && node --test tests/*.test.js"
+    "check": "node --check functions/index.js && node --test --test-isolation=none tests/auth.test.js tests/location.test.js tests/validation.test.js tests/zones.test.js",
+    "test:ui": "vitest run",
+    "test:supabase": "node --test --test-isolation=none tests/supabase.test.js",
+    "test:firebase": "node scripts/test-firebase.mjs",
+    "emulators": "firebase emulators:start --project demo-polygon --only auth,firestore,functions,storage",
+    "nearby:gateway": "node nearby-server.cjs",
+    "test:nearby": "node --test --test-isolation=none tests/gateway.test.js"
   },
   "dependencies": {
+    "@capacitor-community/bluetooth-le": "^8.3.0",
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/browser": "^8.0.5",
+    "@capacitor/core": "^8.5.3",
+    "@supabase/supabase-js": "^2.117.3",
+    "cors": "^2.8.6",
+    "express": "^5.3.0",
     "firebase": "^13.0.0",
+    "leaflet": "^1.9.4",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "three": "0.180.0"
+    "socket.io": "^4.8.4",
+    "socket.io-client": "^4.8.4"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.3.16",
+    "@firebase/rules-unit-testing": "^6.0.0",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
     "@vitejs/plugin-react": "^6.0.0",
-    "vite": "^8.0.0"
+    "firebase-tools": "^15.33.0",
+    "jsdom": "^29.1.1",
+    "vite": "^8.0.0",
+    "vitest": "^5.0.3"
   }
 }

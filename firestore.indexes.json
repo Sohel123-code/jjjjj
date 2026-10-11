@@ -1,0 +1,6 @@
+{"indexes":[],"fieldOverrides":[
+ {"collectionGroup":"content","fieldPath":"deleteAfter","ttl":true,"indexes":[]},
+ {"collectionGroup":"moderation","fieldPath":"deleteAfter","ttl":true,"indexes":[]},
+ {"collectionGroup":"audit","fieldPath":"deleteAfter","ttl":true,"indexes":[]},
+ {"collectionGroup":"limits","fieldPath":"deleteAfter","ttl":true,"indexes":[]}
+]}

@@ -1,85 +1,74 @@
-# Polygon
+﻿# Polygon — temporary communities for physical zones
 
-A campus community homepage built with **React + Three.js + Vite**. The visual direction follows the supplied Polygon artwork: restrained greens, a warm neutral background, and an original procedural miniature campus.
+The active app uses React and **Supabase** for authentication, authorized database actions and private photo storage. See [SUPABASE_SETUP.md](SUPABASE_SETUP.md) for the current setup, migration order, account flow and deployment status.
+
+The current update adds photos to posts/comments/groups/chat, author deletion, zone-scoped management reports and removal, persistent management-only invite tokens, unique usernames, and a cleaner single-column layout with expandable chat.
+
+Run `npm run dev` locally. Validate with `npm run test:supabase`, `npm run test:ui`, `npm run check` and `npm run build`. The SQL migrations must be installed before live mode works; the explicit interactive demo works independently.
+
+## Archived Firebase implementation notes
+
+The remaining notes describe the earlier Firebase implementation. They do not configure the current Supabase application. Keep them only when working on the legacy Functions/emulator code; follow SUPABASE_SETUP.md for the active app.
 
 ## Run locally
 
 ```powershell
-cd C:\Users\SAMSUNG\OneDrive\Desktop\community\polygon
 npm install
+npm --prefix functions install
 npm run dev
 ```
 
-Open the URL printed by Vite (normally http://127.0.0.1:5173/).
+Open the printed localhost URL. **Explore the interactive demo** opens a disposable sample community without authentication or cloud credentials. Its banner stays visible: location and safety checks are simulated, data stays in memory, and reload resets the demo. The demo never silently substitutes for a failed Firebase request and never fabricates Groq matches.
 
-```powershell
-npm run check
-npm run build
-npm run preview
-```
+For real accounts, shared data, real-time updates and AI checks, complete [FIREBASE_SETUP.md](FIREBASE_SETUP.md).
 
-Node 22.12+ or a supported newer version is required by Vite. This project was built with Node 24.
+## Workflow
 
-## Implemented
+1. Management signs in using Google, registers a named physical zone and captures its fixed centre. Choose a radius (50–10,000 m) or a validated polygon.
+2. Firebase generates a 128-bit random joining token, stores only its SHA-256 hash and returns the plaintext once. Management can rotate it.
+3. A user signs in, submits the token, and requests membership. Only that zone’s management can approve the request.
+4. An approved user explicitly starts location verification. Fresh, accurate readings entirely inside the boundary obtain a 45-second grant. Readings are rechecked while the visible page is active. Exact user coordinates are never persisted or exposed to peers.
+5. Verified users land on the main feed. They can post, like, comment, reply, report, block, find lost items, ask event questions, and create/join temporary groups.
+6. Groups use pseudonyms, avatars, membership-gated live chat, presence, typing indicators, contact protection, reporting, expiry and moderation.
+7. Only management can create official events and announcements. Its separate dashboard manages access, members, posts/comments/messages, groups/domains, reports, moderation records, tokens and audit records.
+8. Leaving, disabling location, a failed check, stale readings or tab hiding locks the community. Content expiry locks reads and interactions independently of eventual cleanup.
 
-- Responsive React homepage with the supplied brand artwork.
-- Lazy-loaded Three.js campus: academic buildings, a clock tower, trees, a fountain, paths, tennis court, and polygon boundary.
-- Mouse drag and accessible rotate/reset buttons; touch users can scroll normally and rotate with the buttons.
-- Scroll-driven camera movement, section reveals, and progress indicator.
-- Reduced-motion support, offscreen/background animation pausing, WebGL fallback, and React lifecycle disposal of GPU resources.
-- Sample lost/found/reunited feed with working filters and post dialogs.
-- Real Firebase Google sign-in/sign-out, tab-scoped session persistence, account state and setup/popup/network error handling.
-- Students use personal Google accounts; campus access requires management approval in the upcoming membership backend.
-- College setup preview with circle/polygon validation; invite checks validate format only.
-- Live campus-centre capture: opt in to device location and latitude/longitude fill automatically; the first reading within 100 m accuracy is captured, then tracking stops.
-- Live student zone checks using `watchPosition`, a fixed campus boundary, GPS accuracy and freshness. Supports inside/outside/uncertain, permission denial, timeouts and stale readings.
-- Stop/leave controls; tracking stops on dialog unmount, student sign-out, tab hide and permission revocation. No background restart, location history, storage or Firebase upload.
-- Claim-flow explanation, report/block previews, privacy notice and expandable FAQs.
+## Data and safety
 
-## Deliberately pending
+- Live application data is stored in Firebase Auth, Firestore and private Cloud Storage. Theme preference is the only application preference kept in localStorage; private community data has no localStorage fallback.
+- All substantive reads/writes use an authenticated callable. Firestore clients may only listen to a content-free revision signal after authorization. This permits server-enforced blocking while still delivering real-time updates.
+- AI checks run **before** a public content document is created. A missing key, model failure, malformed verdict or uncertainty prevents publication. Regex contact detection precedes multilingual Groq analysis; image uploads are decoded, resized and re-encoded before vision moderation.
+- Moderation is probabilistic, not a guarantee of perfect detection. The demo’s small test filter is not the live AI system. Reports and administrator review remain essential.
+- Lost/found matching ranks only supplied, active, opposite-status items in the same zone. Candidate IDs and confidence ranges are validated. No candidates, no plausible match, and API failure have distinct empty states.
+- Public records contain zone-specific random pseudonymous author IDs, not Firebase UIDs or account emails. Administrators can map aliases to internal UIDs for moderation.
+- Expiry removes content from the active experience. It cannot erase screenshots, backups, logs or copies. The UI explains this explicitly.
 
-Firebase project `polygon-6628c` is configured for Google Authentication. Google sign-in shares identity with Firebase and creates an Authentication user on first successful login. Enable the Google provider and authorise the frontend domain in Firebase Console before testing. Analytics is not initialised.
+## Main files
 
-College verification, invite redemption, management approval, server-owned zone loading and access enforcement, posts, uploads, private claims, reports, blocks, moderator tools, expiry enforcement and rate limits remain pending. Signing in or receiving a local inside result never grants campus access or an admin role. The app does not read/write Firestore or Storage yet.
-
-To try location now: **For colleges → Use my current location → allow permission → set a radius or polygon → Apply local zone preview → Start live location**. The same in-memory campus boundary is available in the signed-in student panel. The college centre stays fixed while the student moves; it does not follow their current location. One GPS point cannot determine a campus perimeter. Clear the preview or reload to discard the captured boundary. Coordinates are not saved to browser storage or uploaded.
-
-Location requires HTTPS or localhost and browser/device permission. Use the published site in a normal browser tab if an embedded browser restricts location. Real GPS can be inaccurate or spoofed. The client-side check is a functional local preview, not an authorisation mechanism.
-
-The feed is illustrative. The campus model does not represent a verified real college. The 72-hour post lifetime and 30-day safety-evidence retention are proposed defaults, not an operational policy.
-
-See [FIREBASE_SETUP.md](./FIREBASE_SETUP.md) for the complete registration, membership, zone, feed, moderation and retention design, plus the exact configuration needed next.
-
-## Source layout
-
-```text
-src/App.jsx                    Homepage sections and navigation
-src/components/CampusScene.jsx React lifecycle wrapper for Three.js
-src/lib/campus.js              Procedural 3D model and camera animation
-src/components/Feed.jsx        Sample feed and filters
-src/components/ItemArtwork.jsx Original vector sample-item illustrations
-src/components/Modal.jsx       Accessible onboarding and information dialogs
-src/components/AccountPanel.jsx Google sign-in and pending membership UI
-src/context/AuthContext.jsx    Session observer and shared identity state
-src/lib/firebaseConfig.js      Supplied public Firebase web configuration
-src/lib/firebase.js            Firebase app and Google Authentication adapter
-src/lib/authService.js         Session readiness, concurrency and error handling
-src/components/CollegeSetup.jsx Live centre capture and local boundary preview
-src/components/StudentZoneCheck.jsx Live inside/outside/uncertain status
-src/context/CampusZoneContext.jsx In-memory campus preview, never persistence
-src/lib/locationWatcher.js     Location lifecycle, permissions, stop and freshness
-src/lib/useLiveLocation.js     React wrapper and unmount cleanup
-src/lib/geofence.js            Distance, polygon and uncertainty calculations
-src/lib/validation.js          Campus boundary and invite-format validation
-src/lib/useScrollReveal.js     Scroll reveals and progress
-src/styles.css                Responsive design and reduced-motion styles
-public/assets/                Supplied artwork and favicon
-tests/validation.test.js       Boundary and invite validation checks
-scripts/build.mjs             Vite production build entry
-```
-
-`dist/` is generated; edit `src/` and `public/`. The build keeps Three.js in its own lazy-loaded chunk. Its size exceeds Vite's default 500 kB warning threshold; the compressed Three.js chunk is approximately 131 kB.
+| Area | Files |
+| --- | --- |
+| App and access lifecycle | `src/App.jsx`, `src/components/ZoneEntry.jsx` |
+| Feed, lost/found, events, Q&A | `src/components/ZoneFeed.jsx` |
+| Domains, groups, chat | `src/components/ZoneGroups.jsx` |
+| Management and privacy settings | `src/components/ZoneManagement.jsx` |
+| Server authorization and operations | `functions/index.js` |
+| Shared boundary and privacy checks | `functions/core.js` |
+| Firebase restrictions | `firestore.rules`, `storage.rules` |
+| Disposable demonstration | `src/lib/demo.js` |
 
 ## Verification
 
-Production build and 23 tests covering authentication, boundaries, circle/polygon containment, uncertainty, stale readings, permission revocation, tab hiding, late callbacks, timeouts and cleanup pass. Browser automation was unavailable in the authoring environment; visual inspection, actual device permission/GPS testing and a real Google login/logout remain to be tested. Unit tests use synthetic coordinates and do not request your location or establish Firebase Console settings.
+```powershell
+npm run check
+npm run test:ui
+npm run build
+npm run test:firebase
+```
+
+Firebase integration tests use a **demo project only**, the actual Admin SDK/callable handler and Firestore emulator. Groq verdicts are stubbed in tests to make safety and failure behavior deterministic. They do not measure real model accuracy. Java 21+ is required for the emulator.
+
+See [ACCEPTANCE_TESTS.md](ACCEPTANCE_TESTS.md) for the walkthrough and remaining live-service checks.
+
+## Prototype boundaries
+
+Browser GPS is spoofable. This app rejects stale/inaccurate/outside fixes but does not prove physical presence; its explicit spoofing demonstration communicates this limitation. New zone owners are self-service, not independently venue-verified. The prototype is sized for small communities and uses bounded snapshots; expand pagination, large-zone indexing and moderation evaluation before wider rollout. Notifications currently open the relevant events or management updates; there is no background push service. Ownership transfer and self-service account deletion are not implemented; the privacy notice directs account-data requests to management. No cloud resources, billing changes or production deployment are performed by local builds.

@@ -1,0 +1,14 @@
+rules_version = '2';
+service cloud.firestore {
+ match /databases/{database}/documents {
+  // Content-free realtime invalidation signal. Private content uses callable APIs.
+  match /zones/{zoneId}/signals/live {
+   allow read: if request.auth != null
+    && get(/databases/$(database)/documents/zones/$(zoneId)/members/$(request.auth.uid)).data.status == 'active'
+    && (get(/databases/$(database)/documents/zones/$(zoneId)/members/$(request.auth.uid)).data.role == 'admin'
+     || get(/databases/$(database)/documents/zones/$(zoneId)/sessions/$(request.auth.uid)).data.expiresAt > request.time);
+   allow write: if false;
+  }
+  match /{document=**} { allow read, write: if false; }
+ }
+}

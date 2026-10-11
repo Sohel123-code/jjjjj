@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
-import { authService } from '../lib/firebase.js';
-import { authErrorMessage } from '../lib/authService.js';
+import { authService } from '../lib/supabaseAuth.js';
+const authErrorMessage = error => error?.message || 'Could not sign in. Please retry.';
 
 const AuthContext = createContext(null);
 
@@ -28,13 +28,13 @@ export function AuthProvider({ children }) {
         setLoading(false);
       }, failure => {
         if (cancelled) return;
-        console.error('Firebase Auth state error:', failure);
+        console.error('Supabase Auth state error:', failure);
         setError(authErrorMessage(failure));
         setLoading(false);
       });
     }).catch(failure => {
       if (!cancelled) {
-        console.error('Firebase Auth init error:', failure);
+        console.error('Supabase Auth init error:', failure);
         setError(authErrorMessage(failure));
         setLoading(false);
       }
@@ -47,7 +47,7 @@ export function AuthProvider({ children }) {
     setError('');
     try { await action(); return true; }
     catch (failure) {
-      console.error('Firebase Auth action error:', failure);
+      console.error('Supabase Auth action error:', failure);
       if (mounted.current) setError(authErrorMessage(failure));
       return false;
     }

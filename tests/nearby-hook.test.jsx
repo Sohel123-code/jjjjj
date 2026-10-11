@@ -1,0 +1,40 @@
+﻿import {test,expect,vi,beforeEach,afterEach} from 'vitest';
+import {renderHook,waitFor,act,cleanup} from '@testing-library/react';
+const mocks=vi.hoisted(()=>({call:vi.fn(),subscribe:vi.fn(),unsubscribe:vi.fn()}));
+vi.mock('../src/lib/nearby.js',()=>({nearbyCall:mocks.call,attestNetwork:vi.fn()}));
+vi.mock('../src/lib/supabaseBackend.js',()=>({subscribeSignal:mocks.subscribe}));
+import {useNearbySocket} from '../src/hooks/useNearbySocket.js';
+beforeEach(()=>{mocks.call.mockReset();mocks.subscribe.mockReset();mocks.unsubscribe.mockReset();mocks.subscribe.mockReturnValue(mocks.unsubscribe);mocks.call.mockImplementation(async(action)=>action==='snapshot'?{people:[],messages:[{id:'hello',text:'Still here'}],networks:[]}:{state:'inside'});});
+afterEach(cleanup);
+test('fresh location updates preserve the conversation subscription and messages',async()=>{
+ const props={zoneId:'zone',fix:{latitude:1,longitude:2},enabled:true,share:false};
+ const {result,rerender}=renderHook(p=>useNearbySocket(p),{initialProps:props});
+ await waitFor(()=>expect(result.current.status).toBe('connected'));
+ rerender({...props,fix:{latitude:1.0001,longitude:2},share:true});
+ await waitFor(()=>expect(mocks.call).toHaveBeenCalledWith('presence',expect.objectContaining({share:true})));
+ expect(mocks.subscribe).toHaveBeenCalledTimes(1);
+ expect(result.current.messages[0].text).toBe('Still here');
+ rerender({...props,enabled:false});
+ await waitFor(()=>expect(mocks.call).toHaveBeenCalledWith('hide',{zoneId:'zone'}));
+ expect(result.current.messages).toEqual([]);expect(result.current.status).toBe('locked');
+});
+test('a rejected send stays an error and does not invent a message',async()=>{
+ const {result}=renderHook(()=>useNearbySocket({zoneId:'zone',enabled:true,share:false}));
+ await waitFor(()=>expect(result.current.status).toBe('connected'));
+ mocks.call.mockRejectedValueOnce(new Error('Network unavailable'));
+ await act(async()=>{await expect(result.current.mutate('send',{text:'hello'})).rejects.toThrow('Network unavailable');});
+ expect(result.current.messages).toHaveLength(1);
+});
+test('a missing RPC reports setup required and clears stale chat data',async()=>{
+ const props={zoneId:'zone',enabled:true,share:false};
+ const {result,rerender}=renderHook(p=>useNearbySocket(p),{initialProps:props});
+ await waitFor(()=>expect(result.current.status).toBe('connected'));
+ mocks.call.mockRejectedValue(Object.assign(new Error('Database update required'),{code:'PGRST202'}));
+ await act(async()=>{await result.current.refresh();});
+ expect(result.current.status).toBe('setup-required');
+ expect(result.current.messages).toEqual([]);
+ rerender({...props,fix:{latitude:1,longitude:2}});
+ await waitFor(()=>expect(mocks.call).toHaveBeenCalledWith('presence',expect.any(Object)));
+ expect(result.current.status).toBe('setup-required');
+ expect(result.current.error).toBe('Database update required');
+});
